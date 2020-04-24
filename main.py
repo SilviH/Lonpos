@@ -33,7 +33,15 @@ printboard()
 
 
 def display_shape(letter):
-    print(shapes[letter])
+    x = shapes[letter]
+    x = (str(bin(x)))[2:]
+    x = (16 - len(x)) * '0' + x
+
+    for number in range(16):
+        print(x[number], end=' ')
+        if (number + 1) % 4 == 0:
+            print()
+    print()
 
 
 for letter in available_shapes():
