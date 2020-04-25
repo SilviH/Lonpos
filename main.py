@@ -13,13 +13,13 @@ shapes = {'A': 0x44c0, 'B': 0x4cc0, 'C': 0x444c, 'D': 0x44c4,
           }
 
 
-def printboard():
+def print_board():
     for row in playfield:
         for letter in row:
             print(' ' + letter, end='')
 
         print()
-
+    print()
 
 def available_shapes():
     used_shapes = set()
@@ -27,9 +27,6 @@ def available_shapes():
         for letter in row:
             used_shapes.add(letter)
     return shapes.keys() - used_shapes
-
-
-printboard()
 
 
 def display_shape(letter):
@@ -44,5 +41,30 @@ def display_shape(letter):
     print()
 
 
-for letter in available_shapes():
-    display_shape(letter)
+def display_available_shapes():
+    for letter in available_shapes():
+        display_shape(letter)
+
+
+def convert_playfield_to_number(row_start, letter_start):
+    accumulator = ''
+    for row_index in range(row_start, row_start + 4):
+        for letter_index in range(letter_start, letter_start + 4):
+            if row_index >= len(playfield) or letter_index >= len(playfield[0]):
+                accumulator = accumulator + '1'
+            else:
+                letter = playfield[row_index][letter_index]
+                if letter == '.':
+                    accumulator = accumulator + '0'
+                else:
+                    accumulator = accumulator + '1'
+
+    print(accumulator)
+    return int(accumulator, 2)
+
+
+# program starts here
+print_board()
+display_available_shapes()
+check_area = convert_playfield_to_number(2, 8)
+
