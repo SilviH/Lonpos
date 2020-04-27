@@ -53,15 +53,10 @@ def board_area_to_number(row_start, letter_start):
 	for row_index in range(row_start, row_start + 4):
 		for letter_index in range(letter_start, letter_start + 4):  
 			
+			to_add = '1'
 			if row_index < len(playfield) and row_index >= 0 and letter_index < len(playfield[0]) \
 			and letter_index >= 0 and playfield[row_index][letter_index] == '.':
-			
 				to_add = '0'
-				
-			else:
-			
-				to_add = '1'
-				
 			accumulator += to_add	
 			
 	return int(accumulator, base = 2)
