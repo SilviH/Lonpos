@@ -47,29 +47,42 @@ def display_available_shapes():
 		display_shape(letter)
 
 
-def convert_playfield_to_number(row_start, letter_start): 
+
+def board_area_to_number(row_start, letter_start): 
 	accumulator = ''
 	for row_index in range(row_start, row_start + 4):
 		for letter_index in range(letter_start, letter_start + 4):  
-			# Todo: possible to get rid off one accumulator + 1
-			if row_index >= len(playfield) or row_index < 0 or letter_index >= len(playfield[0]) or letter_index < 0:
-				accumulator = accumulator + '1'
+			
+			if row_index < len(playfield) and row_index >= 0 and letter_index < len(playfield[0]) \
+			and letter_index >= 0 and playfield[row_index][letter_index] == '.':
+			
+				to_add = '0'
+				
 			else:
-				letter = playfield[row_index][letter_index]
-				if letter == '.':
-					accumulator = accumulator + '0'
-				else:
-					accumulator = accumulator + '1'
-	return int(accumulator, 2)
+			
+				to_add = '1'
+				
+			accumulator += to_add	
+			
+	return int(accumulator, base = 2)
+
+
+def first_fitting_position(letter):
+	for letter_index in range(-3, 11):
+		for row_index in range(-3, 5):  
+			window = board_area_to_number(row_index, letter_index)
+			if shapes[letter] & window == 0:
+				return (row_index, letter_index)
+			
+	return ()
 
 
 # program starts here
 print_board()
 display_available_shapes()
-check_area = convert_playfield_to_number(-1, -8)
+check_area = board_area_to_number(-1, -8)
 
-for letter_index in range(-3, 11):
-		for row_index in range(-3, 5):  
-			window = convert_playfield_to_number(row_index, letter_index)
-			print(bin(window), shapes['F'] & window)
-		
+print(first_fitting_position('F'))
+
+
+
