@@ -1,11 +1,19 @@
 import copy
 print('Lonpos!')
-
+# riddle 005
 initial_playfield = (['H', 'H', 'B', 'B', 'B', 'C', 'C', 'C', 'C', 'K', 'K'],
 			 ['D', 'H', 'H', 'B', 'B', 'C', 'A', 'A', 'A', 'K', 'K'],
 			 ['D', 'D', 'H', 'E', 'E', 'L', 'I', 'I', 'A', '.', '.'],
 			 ['D', 'E', 'E', 'E', 'L', 'L', 'L', 'I', '.', '.', '.'],
 			 ['D', 'J', 'J', 'J', 'J', 'L', 'I', 'I', '.', '.', '.']
+			 )
+
+# riddle 005
+initial_playfield = (['J', 'J', 'J', 'J', 'H', 'H', 'D', 'D', 'D', 'D', 'F'],
+			 ['C', 'C', 'I', 'I', 'L', 'H', 'H', 'D', 'E', 'F', 'F'],
+			 ['C', 'G', 'I', 'L', 'L', 'L', 'H', 'E', 'E', '.', '.'],
+			 ['C', 'G', 'I', 'I', 'L', 'B', 'B', 'E', '.', '.', '.'],
+			 ['C', 'G', 'G', 'G', 'B', 'B', 'B', 'E', '.', '.', '.']
 			 )
 
 shapes = {'A': 0x44c0, 'B': 0x4cc0, 'C': 0x444c, 'D': 0x44c4,
@@ -32,14 +40,19 @@ def available_shapes(playfield): # returns set of available shapes (letters)
 
 
 def shape_to_binary(letter):
+
 	retval = shapes[letter]
 	retval = (str(bin(retval)))[2:]
 	retval = (16 - len(retval)) * '0' + retval
 	return retval
-
-def display_shape(letter):
-	x = shape_to_binary(letter)
 	
+
+def display_shape(letter): # takes as argument a string letter (shape mark) or a string sequence of 16 binary digits
+	if len(letter) == 1:
+		x = shape_to_binary(letter)
+	else:
+		x = letter
+		
 	for number in range(16):
 		print(x[number], end=' ')
 		if (number + 1) % 4 == 0:
@@ -85,7 +98,16 @@ def insert_shape(playfield, letter, x, y):
 			if this_shape[offset] == '1':
 				retval[row_index + y][col_index + x] = letter
 	return retval
-		
+	
+
+def horizontally_swap_shape(letter):  # return binary 16 digits long string
+	retval = ''
+	for row_start in range(12, -1, -4):
+		retval += shape_to_binary(letter)[row_start : row_start + 4]
+	return retval
+	
+
+
 # program starts here
 print_board(initial_playfield)
 display_available_shapes(initial_playfield)
@@ -94,8 +116,13 @@ check_area = board_area_to_number(initial_playfield, -1, -8)
 my_playfield = initial_playfield
 for shape in available_shapes(initial_playfield):
 	place = first_fitting_position(my_playfield,shape)
-	my_playfield = insert_shape(my_playfield,shape,place[1], place[0])
+	print(place, shape)
+	if len(place)>0:
+		my_playfield = insert_shape(my_playfield,shape,place[1], place[0])
 
 print(my_playfield)
 
 
+swap = horizontally_swap_shape('D')
+display_shape('D')
+display_shape(swap)
