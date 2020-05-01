@@ -1,4 +1,5 @@
 import copy
+import shape
 print('Lonpos!')
 # riddle 005
 initial_playfield = (['H', 'H', 'B', 'B', 'B', 'C', 'C', 'C', 'C', 'K', 'K'],
@@ -16,11 +17,11 @@ initial_playfield = (['J', 'J', 'J', 'J', 'H', 'H', 'D', 'D', 'D', 'D', 'F'],
 			 ['C', 'G', 'G', 'G', 'B', 'B', 'B', 'E', '.', '.', '.']
 			 )
 
-shapes = {'A': 0x44c0, 'B': 0x4cc0, 'C': 0x444c, 'D': 0x44c4,
+all_shapes = {'A': 0x44c0, 'B': 0x4cc0, 'C': 0x444c, 'D': 0x44c4,
 		  'E': 0x44c8, 'F': 0x4c00, 'G': 0x22e0, 'H': 0x26c0,
 		  'I': 0xae00, 'J': 0x8888, 'K': 0xcc00, 'L': 0x4e40,
 		  }
-
+shapes = {}
 
 def print_board(playfield):
 	for row in playfield:
@@ -31,38 +32,18 @@ def print_board(playfield):
 	print()
 
 
-def available_shapes(playfield): # returns set of available shapes (letters)
+def available_shapes(playfield): # returns list of available shapes (letters), alphabetically sorted
 	used_shapes = set()
 	for row in playfield:
 		for letter in row:
 			used_shapes.add(letter)
-	return shapes.keys() - used_shapes
-
-
-def shape_to_binary(letter):
-
-	retval = shapes[letter]
-	retval = (str(bin(retval)))[2:]
-	retval = (16 - len(retval)) * '0' + retval
-	return retval
-	
-
-def display_shape(letter): # takes as argument a string letter (shape mark) or a string sequence of 16 binary digits
-	if len(letter) == 1:
-		x = shape_to_binary(letter)
-	else:
-		x = letter
-		
-	for number in range(16):
-		print(x[number], end=' ')
-		if (number + 1) % 4 == 0:
-			print()
-	print()
+			
+	return sorted(list(shapes.keys() - used_shapes))
 	
 
 def display_available_shapes(playfield):
 	for letter in available_shapes(playfield):
-		display_shape(letter)
+		shapes[letter].display()
 
 
 def board_area_to_number(playfield, row_start, letter_start): 
@@ -83,33 +64,42 @@ def first_fitting_position(playfield, letter): # returns tuple of coordinates
 	for letter_index in range(-3, 11):
 		for row_index in range(-3, 5):  
 			window = board_area_to_number(playfield,row_index, letter_index)
-			if shapes[letter] & window == 0:
+			if shapes[letter].get_number() & window == 0:
 				return (row_index, letter_index)
 			
 	return ()
 
 
+#def insert_shape(playfield, letter, x, y):
+#	retval = copy.deepcopy(playfield)
+#	this_shape = shape_to_binary(letter)
+#	for col_index in range(0, 4):
+#		for row_index in range(0, 4):  
+#			offset = col_index + 4 * row_index
+#			if this_shape[offset] == '1':
+#				retval[row_index + y][col_index + x] = letter
+#	return retval
+	
 def insert_shape(playfield, letter, x, y):
 	retval = copy.deepcopy(playfield)
-	this_shape = shape_to_binary(letter)
+	this_shape = shapes[letter].to_binary()
 	for col_index in range(0, 4):
 		for row_index in range(0, 4):  
 			offset = col_index + 4 * row_index
 			if this_shape[offset] == '1':
 				retval[row_index + y][col_index + x] = letter
 	return retval
-	
-
-def horizontally_swap_shape(letter):  # return binary 16 digits long string
-	retval = ''
-	for row_start in range(12, -1, -4):
-		retval += shape_to_binary(letter)[row_start : row_start + 4]
-	return retval
-	
+		
 
 
 # program starts here
+
+
+for key,val in all_shapes.items():
+	shapes[key]=shape.Shape(key, val)
+
 print_board(initial_playfield)
+print('Available shapes:')
 display_available_shapes(initial_playfield)
 check_area = board_area_to_number(initial_playfield, -1, -8)
 
@@ -122,7 +112,7 @@ for shape in available_shapes(initial_playfield):
 
 print(my_playfield)
 
+my_shape =shapes['A']
+my_shape.mirror_x()
+my_shape.display()
 
-swap = horizontally_swap_shape('D')
-display_shape('D')
-display_shape(swap)
