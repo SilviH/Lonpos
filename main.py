@@ -60,34 +60,24 @@ def board_area_to_number(playfield, row_start, letter_start):
 	return int(accumulator, base = 2)
 
 
-def first_fitting_position(playfield, letter): # returns tuple of coordinates	
+def first_fitting_position(playfield, shape): # returns tuple of coordinates	
 	for letter_index in range(-3, 11):
 		for row_index in range(-3, 5):  
 			window = board_area_to_number(playfield,row_index, letter_index)
-			if shapes[letter].get_number() & window == 0:
+			if shape.get_number() & window == 0:
 				return (row_index, letter_index)
 			
 	return ()
 
-
-#def insert_shape(playfield, letter, x, y):
-#	retval = copy.deepcopy(playfield)
-#	this_shape = shape_to_binary(letter)
-#	for col_index in range(0, 4):
-#		for row_index in range(0, 4):  
-#			offset = col_index + 4 * row_index
-#			if this_shape[offset] == '1':
-#				retval[row_index + y][col_index + x] = letter
-#	return retval
 	
-def insert_shape(playfield, letter, x, y):
+def insert_shape(playfield, shape, x, y):
 	retval = copy.deepcopy(playfield)
-	this_shape = shapes[letter].to_binary()
+	this_shape = shape.to_binary()
 	for col_index in range(0, 4):
 		for row_index in range(0, 4):  
 			offset = col_index + 4 * row_index
 			if this_shape[offset] == '1':
-				retval[row_index + y][col_index + x] = letter
+				retval[row_index + y][col_index + x] = shape.get_name()
 	return retval
 		
 
@@ -99,20 +89,28 @@ for key,val in all_shapes.items():
 	shapes[key]=shape.Shape(key, val)
 
 print_board(initial_playfield)
+
 print('Available shapes:')
 display_available_shapes(initial_playfield)
-check_area = board_area_to_number(initial_playfield, -1, -8)
+
 
 my_playfield = initial_playfield
-for shape in available_shapes(initial_playfield):
-	place = first_fitting_position(my_playfield,shape)
-	print(place, shape)
-	if len(place)>0:
-		my_playfield = insert_shape(my_playfield,shape,place[1], place[0])
 
+temp = available_shapes(initial_playfield)
+temp.reverse()
+
+for letter in temp:
+	shape = shapes[letter]
+	for orientation in [0,'mirror_x']:
+		shape.set_orientation(orientation)
+		place = first_fitting_position(my_playfield,shape)
+		print(place, letter)
+		if len(place)>0:
+			my_playfield = insert_shape(my_playfield, shape, place[1], place[0])
+			break
+			
 print(my_playfield)
 
 my_shape =shapes['A']
 my_shape.mirror_x()
 my_shape.display()
-

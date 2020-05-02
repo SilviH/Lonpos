@@ -1,8 +1,8 @@
 class Shape:
 	letter_name = ''
 	rotation = 0
-	mirror_x = False
-	mirror_y = False
+	is_mirror_x = False
+	is_mirror_y = False
 	representation = 0
 	
 	def __init__(self, name, number):
@@ -11,6 +11,9 @@ class Shape:
 	
 	def get_number(self):
 		return self.representation
+		
+	def get_name(self):
+		return self.letter_name
 	
 	def to_binary(self): # returns string
 		retval = (str(bin(self.representation)))[2:]
@@ -26,15 +29,15 @@ class Shape:
 		print()
 
 	def mirror_x(self):  
-		self.mirror_x = True
+		self.is_mirror_x = True
 		binary_representation = self.to_binary()
-		retval = ''
+		mirror = ''
 		for row_start in range(12, -1, -4):
-			retval += binary_representation[row_start : row_start + 4]
-		self.representation = int(retval,2)	
+			mirror += binary_representation[row_start : row_start + 4]
+		self.representation = int(mirror,2)	
 		
-	def horizontally_swap_shape(letter):  # return binary 16 digits long string
-		retval = ''
-		for row_start in range(12, -1, -4):
-			retval += shapes[letter].to_binary()[row_start : row_start + 4]
-		return retval
+	def set_orientation(self, orientation):
+		if orientation == 0:
+			return
+		if orientation == 'mirror_x':
+			self.mirror_x()
