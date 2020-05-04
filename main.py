@@ -80,37 +80,67 @@ def insert_shape(playfield, shape, x, y):
 				retval[row_index + y][col_index + x] = shape.get_name()
 	return retval
 		
+#def recurse_process_shape(my_playfield, shape, remaining_shapes):
+#	
+#	for orientation in [0,'mirror_x']:
+#		shape.set_orientation(orientation)
+#		place = first_fitting_position(my_playfield, shape)
+#		
+#		if len(place) > 0:
+#			my_playfield = insert_shape(my_playfield, shape, place[1], place[0])
+#			next_shape = remaining_shapes[0]
+#			remaining_shapes = remaining_shapes[1:]
+#			recurse_process_shape(my_playfield, next_shape, remaining_shapes)
+#			break
 
-
+def recurse_process_shape(my_playfield, shape, remaining_shapes):
+	
+	for orientation in [0,'mirror_x']:
+		
+		shape.set_orientation(orientation)
+		shape.display()
+		place = first_fitting_position(my_playfield, shape)
+		
+		if len(place) > 0:
+			my_playfield = insert_shape(my_playfield, shape, place[1], place[0])
+			if len(remaining_shapes) > 0:
+				next_shape = remaining_shapes[0]
+				remaining_shapes = remaining_shapes[1:]
+				my_playfield = recurse_process_shape(my_playfield, next_shape, remaining_shapes)
+			break
+			
+	print(my_playfield)
+	return my_playfield
+	
+	
 # program starts here
-
-
-for key,val in all_shapes.items():
-	shapes[key]=shape.Shape(key, val)
 
 print_board(initial_playfield)
 
+for key,val in all_shapes.items():
+	shapes[key]=shape.Shape(key, val)
+	# create Shape dictionary
+	
 print('Available shapes:')
 display_available_shapes(initial_playfield)
 
-
 my_playfield = initial_playfield
-
 temp = available_shapes(initial_playfield)
 temp.reverse()
 
-for letter in temp:
-	shape = shapes[letter]
-	for orientation in [0,'mirror_x']:
-		shape.set_orientation(orientation)
-		place = first_fitting_position(my_playfield,shape)
-		print(place, letter)
-		if len(place)>0:
-			my_playfield = insert_shape(my_playfield, shape, place[1], place[0])
-			break
-			
-print(my_playfield)
 
-my_shape =shapes['A']
-my_shape.mirror_x()
-my_shape.display()
+#available_shapes_lenght = len(temp)
+#for letter_index in range(available_shapes_lenght): # how many available letters
+#	initial_shape = shapes[temp[letter_index]] # take the available letters one by one as the einitial
+#	 
+#	for shape_index in range(available_shapes_lenght - 1): # number of remaining letters in the list as range 
+#		initial_remaining = []
+#		initial_remaining.append(shapes[temp[shape_index + 1]]) # list of remaining shapes (objects)
+#		
+#	available_shapes_lenght -= 1	
+
+initial_shape = shapes[temp[0]]	
+
+initial_remaining = [shapes[temp[1]]]
+
+recurse_process_shape(my_playfield, initial_shape, initial_remaining)
