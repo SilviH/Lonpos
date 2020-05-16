@@ -3,6 +3,7 @@
 
 import copy
 import shape
+import playfield
 
 print('Lonpos!')
 # riddle 005
@@ -44,94 +45,34 @@ all_shapes = {'A': 0x44c0, 'B': 0x4cc0, 'C': 0x444c, 'D': 0x44c4,
 shapes = {}
 
 
-def print_board(playfield):
-    for row in playfield:
-        for current_letter in row:
-            print(' ' + current_letter, end='')
 
-        print()
-    print()
-
-
-def available_letters(playfield):  # returns list of available shapes (letters), alphabetically sorted
-    used_shapes = set()
-    for row in playfield:
-        for current_letter in row:
-            used_shapes.add(current_letter)
-
-    return sorted(list(shapes.keys() - used_shapes))
-
-
-def display_available_shapes(playfield):
-    for current_letter in available_letters(playfield):
-        shapes[current_letter].display()
-
-
-def board_area_to_number(playfield, row_start, letter_start):
-    accumulator = ''
-    for row_index in range(row_start, row_start + 4):
-        for letter_index in range(letter_start, letter_start + 4):
-
-            to_add = '1'
-            if len(playfield) > row_index >= 0 and \
-                    len(playfield[0]) > letter_index >= 0 and \
-                    playfield[row_index][letter_index] == '.':
-                to_add = '0'
-            accumulator += to_add
-
-    return int(accumulator, base=2)
-
-
-def first_fitting_position(playfield, current_shape):  # returns tuple of coordinates
-    for letter_index in range(-3, 11):
-        for row_index in range(-3, 5):
-            window = board_area_to_number(playfield, row_index, letter_index)
-            if current_shape.get_number() & window == 0:
-                return row_index, letter_index
-
-    return ()
-
-
-def insert_shape(playfield, current_shape, x, y):
-    retval = copy.deepcopy(playfield)
-    this_shape = current_shape.to_binary()
-    for col_index in range(0, 4):
-        for row_index in range(0, 4):
-            offset = col_index + 4 * row_index
-            if this_shape[offset] == '1':
-                retval[row_index + y][col_index + x] = current_shape.get_name()
-    return retval
-
-
-def recurse_process_shape(playfield, current_shape, remaining_shapes):
-    for orientation in ['rot_0', 'mirror_x']:
-
+def recurse_process_shape(playfield, current_shape, remaining_shapes):   
+    for orientation in current_shape.get_all_orientations():
         current_shape.set_orientation(orientation)
         current_shape.display()
-        place = first_fitting_position(playfield, current_shape)
-
+        place = playfield.first_fitting_position(current_shape)
         if len(place) > 0:
-            playfield = insert_shape(playfield, current_shape, place[1], place[0])
+            playfield = playfield.insert_shape(current_shape, place[1], place[0])
             if len(remaining_shapes) > 0:
                 next_shape = remaining_shapes[0]
                 remaining_shapes = remaining_shapes[1:]
                 playfield = recurse_process_shape(playfield, next_shape, remaining_shapes)
             break
 
-    print(playfield)
+    playfield.display()
     return playfield
 
 
 # program starts here
 
-print_board(initial_playfield)
+# create playfield object
+riddle = playfield.Playfield(initial_playfield)
+riddle.display()
 
 for key, val in all_shapes.items():
     shapes[key] = shape.Shape(key, val)
-# create Shape dictionary
 
-my_playfield = initial_playfield
-temp = available_letters(initial_playfield)
+temp = riddle.available_letters(shapes.keys())
 
 initial_remaining_shapes = []
 for length_index in range(len(temp)):
@@ -141,5 +82,7 @@ for letter in range(len(temp)):  # how many available letters
     initial_shape = shapes[temp[letter]]  # take the available letters one by one as the einitial
 
     initial_remaining_shapes = initial_remaining_shapes[1:]
-    recurse_process_shape(my_playfield, initial_shape, initial_remaining_shapes)
+    recurse_process_shape(riddle, initial_shape, initial_remaining_shapes)
     initial_remaining_shapes.append(initial_shape)  # list of remaining shapes (objects)
+
+
