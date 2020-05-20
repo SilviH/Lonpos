@@ -28,7 +28,14 @@ class Playfield:
         for current_letter in self.available_letters(shapes_dict.keys()):
             shapes_dict[current_letter].display()
             
-            
+
+    def initial_remaining_shapes(self, shapes_dict, available_shapes_keys):
+        initial_shapes = []
+        for length_index in range(len(available_shapes_keys)):
+            initial_shapes.append(shapes_dict[available_shapes_keys[length_index]])
+        return initial_shapes
+
+       
             
     def board_area_to_number(self, row_start, letter_start):
         accumulator = ''

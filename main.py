@@ -46,6 +46,7 @@ shapes = {}
 
 
 
+# fits in the first possible fitting orientations
 def recurse_process_shape(playfield, current_shape, remaining_shapes):   
     for orientation in current_shape.get_all_orientations():
         current_shape.set_orientation(orientation)
@@ -76,15 +77,14 @@ for key, val in all_shapes.items():
 
 temp = riddle.available_letters(shapes.keys())
 
-initial_remaining_shapes = []
-for length_index in range(len(temp)):
-    initial_remaining_shapes.append(shapes[temp[length_index]])
+
+starting_remaining_shapes = riddle.initial_remaining_shapes(shapes, riddle.available_letters(shapes.keys()))
 
 for letter in range(len(temp)):  # how many available letters
     initial_shape = shapes[temp[letter]]  # take the available letters one by one as the einitial
 
-    initial_remaining_shapes = initial_remaining_shapes[1:]
-    recurse_process_shape(riddle, initial_shape, initial_remaining_shapes)
-    initial_remaining_shapes.append(initial_shape)  # list of remaining shapes (objects)
+    starting_remaining_shapes = starting_remaining_shapes[1:]
+    recurse_process_shape(riddle, initial_shape, starting_remaining_shapes)
+    starting_remaining_shapes.append(initial_shape)  # list of remaining shapes (objects)
 
 
