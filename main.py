@@ -1,18 +1,18 @@
 #TO DO:
-# Stop the cycle when filled
+#
 
 import copy
 import shape
 import playfield
 
 print('Lonpos!')
-# riddle 005
-initial_playfiel5 = (['H', 'H', 'B', 'B', 'B', 'C', 'C', 'C', 'C', 'K', 'K'],
-                     ['D', 'H', 'H', 'B', 'B', 'C', 'A', 'A', 'A', 'K', 'K'],
-                     ['D', 'D', 'H', 'E', 'E', 'L', 'I', 'I', 'A', '.', '.'],
-                     ['D', 'E', 'E', 'E', 'L', 'L', 'L', 'I', '.', '.', '.'],
-                     ['D', 'J', 'J', 'J', 'J', 'L', 'I', 'I', '.', '.', '.']
-                     )
+## riddle 005
+#initial_playfield = (['H', 'H', 'B', 'B', 'B', 'C', 'C', 'C', 'C', 'K', 'K'],
+#                     ['D', 'H', 'H', 'B', 'B', 'C', 'A', 'A', 'A', 'K', 'K'],
+#                     ['D', 'D', 'H', 'E', 'E', 'L', 'I', 'I', 'A', '.', '.'],
+#                     ['D', 'E', 'E', 'E', 'L', 'L', 'L', 'I', '.', '.', '.'],
+#                     ['D', 'J', 'J', 'J', 'J', 'L', 'I', 'I', '.', '.', '.']
+#                     )
 
 # riddle 006
 initial_playfield = (['J', 'J', 'J', 'J', 'H', 'H', 'D', 'D', 'D', 'D', 'F'],
@@ -22,13 +22,13 @@ initial_playfield = (['J', 'J', 'J', 'J', 'H', 'H', 'D', 'D', 'D', 'D', 'F'],
                      ['C', 'G', 'G', 'G', 'B', 'B', 'B', 'E', '.', '.', '.']
                      )
 
-# riddle 007 needs vertical mirror
-initial_playfield = (['E', 'E', 'G', 'G', 'G', 'D', 'D', 'D', 'D', 'K', 'K'],
-			 ['J', 'E', 'E', 'E', 'G', 'C', 'D', 'H', 'H', 'K', 'K'],
-			 ['J', 'I', 'I', 'L', 'G', 'C', 'H', 'H', '.', '.', '.'],
-			 ['J', 'I', 'L', 'L', 'L', 'C', 'H', 'F', '.', '.', '.'],
-			 ['J', 'I', 'I', 'L', 'C', 'C', 'F', 'F', '.', '.', '.']
-			 )
+### riddle 007 needs vertical mirror
+#initial_playfield = (['E', 'E', 'G', 'G', 'G', 'D', 'D', 'D', 'D', 'K', 'K'],
+#			 ['J', 'E', 'E', 'E', 'G', 'C', 'D', 'H', 'H', 'K', 'K'],
+#			 ['J', 'I', 'I', 'L', 'G', 'C', 'H', 'H', '.', '.', '.'],
+#			 ['J', 'I', 'L', 'L', 'L', 'C', 'H', 'F', '.', '.', '.'],
+#			 ['J', 'I', 'I', 'L', 'C', 'C', 'F', 'F', '.', '.', '.']
+#			 )
 
 ## riddle 008
 #initial_playfield = (['B', 'B', 'D', 'D', 'D', 'D', 'H', 'H', 'A', 'A', 'A'],
@@ -53,6 +53,8 @@ def recurse_process_shape(playfield, current_shape, remaining_shapes):
         place = playfield.first_fitting_position(current_shape)
         if len(place) > 0:
             playfield = playfield.insert_shape(current_shape, place[1], place[0])
+            if playfield.is_solved():
+               break
             if len(remaining_shapes) > 0:
                 next_shape = remaining_shapes[0]
                 remaining_shapes = remaining_shapes[1:]

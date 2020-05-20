@@ -64,4 +64,11 @@ class Playfield:
                     retval[row_index + y][col_index + x] = current_shape.get_name()
         return Playfield(retval)
 
+    def is_solved(self):
+        for row in self.board:
+            for current_letter in row:
+                if current_letter == '.':
+                    return False
+        return True
+        
 
