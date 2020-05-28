@@ -37,18 +37,24 @@ class Playfield:
 
        
             
+
     def board_area_to_number(self, row_start, letter_start):
-        accumulator = ''
+        accumulator = 0
+        board_height = len(self.board)
+        board_length = len(self.board[0])
+        value_to_add = 2**15
         for row_index in range(row_start, row_start + 4):
             for letter_index in range(letter_start, letter_start + 4):
 
-                to_add = '1'
-                if len(self.board) > row_index >= 0 and \
-                        len(self.board[0]) > letter_index >= 0 and \
-                        self.board[row_index][letter_index] == '.':
-                    to_add = '0'
-                accumulator += to_add      
-        return int(accumulator, base=2)
+
+                if not(board_height > row_index >= 0 and \
+                        board_length > letter_index >= 0 and \
+                        self.board[row_index][letter_index] == '.'):
+                    accumulator += value_to_add
+                
+                value_to_add = value_to_add >> 1
+        return accumulator
+
 
 
     def first_fitting_position(self, current_shape):  # returns tuple of coordinates

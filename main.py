@@ -1,5 +1,10 @@
 #TO DO:
 #
+import cProfile, pstats, io
+from pstats import SortKey
+pr = cProfile.Profile()
+pr.enable()
+# ... do something ...
 
 import copy
 import shape
@@ -41,9 +46,9 @@ print('Lonpos!')
 ## riddle 025
 initial_playfield = (['J', 'I', 'I', 'L', 'F', 'F', '.', '.', '.', '.', '.'],
 			 ['J', 'I', 'L', 'L', 'L', 'F', '.', '.', '.', '.', '.'],
-			 ['J', 'I', 'I', 'L', 'E', 'E', 'H', '.', '.', '.', '.'],
-			 ['J', 'D', 'E', 'E', 'E', 'H', 'H', '.', '.', '.', '.'],
-			 ['D', 'D', 'D', 'D', 'H', 'H', '.', '.', '.', '.', '.']
+			 ['J', 'I', 'I', 'L', 'E', 'E', 'H', 'A', '.', '.', '.'],
+			 ['J', 'D', 'E', 'E', 'E', 'H', 'H', 'A', '.', '.', '.'],
+			 ['D', 'D', 'D', 'D', 'H', 'H', 'A', 'A', '.', '.', '.']
 			 )
 
 
@@ -105,4 +110,10 @@ for letter in range(len(temp)):  # how many available letters
         break
     starting_remaining_shapes.append(initial_shape)  # list of remaining shapes (objects)
 
+pr.disable()
+s = io.StringIO()
+sortby = SortKey.CUMULATIVE
+ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+ps.print_stats()
+print(s.getvalue())
 
