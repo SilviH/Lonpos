@@ -34,25 +34,44 @@ class Playfield:
         for length_index in range(len(available_shapes_keys)):
             initial_shapes.append(shapes_dict[available_shapes_keys[length_index]])
         return initial_shapes
+      
 
-       
-            
-
-    def board_area_to_number(self, row_start, letter_start):
+    def board_area_to_number(self, row_start, letter_start1):
         accumulator = 0
         board_height = len(self.board)
         board_length = len(self.board[0])
         value_to_add = 2**15
+        
         for row_index in range(row_start, row_start + 4):
-            for letter_index in range(letter_start, letter_start + 4):
-
-
-                if not(board_height > row_index >= 0 and \
-                        board_length > letter_index >= 0 and \
-                        self.board[row_index][letter_index] == '.'):
-                    accumulator += value_to_add
-                
-                value_to_add = value_to_add >> 1
+            letter_start = letter_start1
+            if not(board_height > row_index >= 0 and \
+                   board_length > letter_start >= 0 and \
+                   self.board[row_index][letter_start] == '.'):
+                accumulator += value_to_add
+            value_to_add = value_to_add >> 1
+            letter_start+=1
+            
+            if not(board_height > row_index >= 0 and \
+                   board_length > letter_start >= 0 and \
+                   self.board[row_index][letter_start] == '.'):
+                accumulator += value_to_add
+            value_to_add = value_to_add >> 1
+            letter_start+=1
+            
+            if not(board_height > row_index >= 0 and \
+                   board_length > letter_start >= 0 and \
+                   self.board[row_index][letter_start] == '.'):
+                accumulator += value_to_add
+            value_to_add = value_to_add >> 1
+            letter_start+=1
+            
+            if not(board_height > row_index >= 0 and \
+                   board_length > letter_start >= 0 and \
+                   self.board[row_index][letter_start] == '.'):
+                accumulator += value_to_add
+            value_to_add = value_to_add >> 1
+            letter_start+=1
+       
         return accumulator
 
 
