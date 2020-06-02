@@ -1,5 +1,5 @@
-#TO DO:
-#
+#TO DO: num board to class file
+#get rid off deepcopy
 
 
 import cProfile, pstats, io
@@ -61,16 +61,18 @@ all_shapes = {'A': 0x44c0, 'B': 0x4cc0, 'C': 0x444c, 'D': 0x44c4,
               }
 shapes = {}
 
-
+row_ones =  ['1', '1', '1','1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'] 
+num_board = (row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),row_ones.copy(),) 
 
 # fits in the first possible fitting orientations
-def recurse_process_shape(playfield, current_shape, rest_shapes): 
+def recurse_process_shape(playfield, current_shape, rest_shapes,num_playfield): 
     # saving parametres for rerun
     remaining_shapes = list(rest_shapes)
     playfield2 = copy.deepcopy(playfield)
     for orientation in current_shape.get_all_orientations():
         current_shape.set_orientation(orientation)
-        place = playfield2.first_fitting_position(current_shape)
+        numbers_board = copy.deepcopy(num_playfield)
+        place = playfield2.first_fitting_position(current_shape, numbers_board)
         if len(place) > 0:
             playfield2 = playfield2.insert_shape(current_shape, place[1], place[0])
             if playfield2.is_solved():
@@ -79,7 +81,8 @@ def recurse_process_shape(playfield, current_shape, rest_shapes):
             if len(remaining_shapes) > 0:
                 next_shape = remaining_shapes[0]
                 remaining_shapes = remaining_shapes[1:]
-                playfield2 = recurse_process_shape(playfield2, next_shape, remaining_shapes)
+                numbers_board = copy.deepcopy(num_playfield)
+                playfield2 = recurse_process_shape(playfield2, next_shape, remaining_shapes,numbers_board)
                 if playfield2.is_solved():
                     playfield = copy.deepcopy(playfield2)
                     break
@@ -106,7 +109,7 @@ for letter in range(len(temp)):  # how many available letters
     initial_shape = shapes[temp[letter]]  # take the available letters one by one as the einitial
 
     starting_remaining_shapes = starting_remaining_shapes[1:]
-    result = recurse_process_shape(riddle, initial_shape, starting_remaining_shapes)
+    result = recurse_process_shape(riddle, initial_shape, starting_remaining_shapes,num_board)
     if result.is_solved():
         print('RESULT')
         result.display()
