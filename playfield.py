@@ -37,19 +37,45 @@ class Playfield:
 
        
             
-    def board_area_to_number(self, row_start, letter_start):
+    def board_area_to_number(self, row_start, letter_start1):
         accumulator = ''
         board_height = len(self.board)
         board_length = len(self.board[0])
         for row_index in range(row_start, row_start + 4):
-            for letter_index in range(letter_start, letter_start + 4):
+            letter_index = letter_start1
 
-                to_add = '1'
-                if board_height > row_index >= 0 and \
-                        board_length > letter_index >= 0 and \
-                        self.board[row_index][letter_index] == '.':
-                    to_add = '0'
-                accumulator += to_add      
+            to_add = '1'
+            if board_height > row_index >= 0 and \
+                    board_length > letter_index >= 0 and \
+                    self.board[row_index][letter_index] == '.':
+                to_add = '0'
+            accumulator += to_add
+            letter_index += 1
+            
+            to_add = '1'
+            if board_height > row_index >= 0 and \
+                    board_length > letter_index >= 0 and \
+                    self.board[row_index][letter_index] == '.':
+                to_add = '0'
+            accumulator += to_add
+            letter_index +=1
+            
+            to_add = '1'
+            if board_height > row_index >= 0 and \
+                    board_length > letter_index >= 0 and \
+                    self.board[row_index][letter_index] == '.':
+                to_add = '0'
+            accumulator += to_add
+            letter_index +=1
+            
+            to_add = '1'
+            if board_height > row_index >= 0 and \
+                    board_length > letter_index >= 0 and \
+                    self.board[row_index][letter_index] == '.':
+                to_add = '0'
+            accumulator += to_add
+            letter_index +=1
+               
         return int(accumulator, base=2)
 
 
