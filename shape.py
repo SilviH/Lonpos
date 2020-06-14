@@ -51,21 +51,23 @@ class Shape:
         
     def rotate(self, angle):
         binary_representation = self.to_binary()
-        rotation = list(16 * '0')
+        rotation_buffer = list(16 * '0')
         for y in range(4):
             for x in range(4):
                 offset = x + 4 * y
                 if binary_representation[offset] == '1':
                     offset2 = y + 4 * x
-                    rotation[offset2] = '1'  
-        self.representation = int(''.join(rotation), 2)          
+                    rotation_buffer[offset2] = '1'
+        self.representation = int(''.join(rotation_buffer), 2)
         if angle == 90:
             self.mirror_x()
         if angle == 270:
             self.mirror_y()   
     
-    def get_all_orientations(self):  
-        return ['rot_0','rot_90','rot_180','rot_270','mirror_x','mirr_rot_90','mirr_rot_180','mirr_rot_270', 'mirror_y']
+    @staticmethod
+    def get_all_orientations():
+        return ['rot_0', 'rot_90', 'rot_180', 'rot_270',
+                'mirror_x', 'mirr_rot_90', 'mirr_rot_180', 'mirr_rot_270', 'mirror_y']
         
     def set_orientation(self, orientation):
         self.reset()
@@ -90,7 +92,8 @@ class Shape:
         if orientation == 'mirr_rot_270':
             self.mirror_x()
             self.rotate(270)
-            
+
+
 if __name__ == "__main__":
     my_shape = Shape('A', 0x44c0)
 

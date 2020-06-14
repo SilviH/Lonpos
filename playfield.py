@@ -1,5 +1,7 @@
 # list of 5 lists
 import copy
+
+
 class Playfield:
     init_board = []
     board = []
@@ -15,7 +17,6 @@ class Playfield:
             print()
         print()
 
-
     def available_letters(self, shapes_keys):  # returns list of available shapes (letters), alphabetically sorted
         used_shapes = set()
         for row in self.board:
@@ -27,16 +28,14 @@ class Playfield:
     def display_available_shapes(self, shapes_dict):
         for current_letter in self.available_letters(shapes_dict.keys()):
             shapes_dict[current_letter].display()
-            
 
-    def initial_remaining_shapes(self, shapes_dict, available_shapes_keys):
+    @staticmethod
+    def initial_remaining_shapes(shapes_dict, available_shapes_keys):
         initial_shapes = []
         for length_index in range(len(available_shapes_keys)):
             initial_shapes.append(shapes_dict[available_shapes_keys[length_index]])
         return initial_shapes
 
-       
-            
     def board_area_to_number(self, row_start, letter_start1):
         accumulator = ''
         board_height = len(self.board)
@@ -58,7 +57,7 @@ class Playfield:
                     self.board[row_index][letter_index] == '.':
                 to_add = '0'
             accumulator += to_add
-            letter_index +=1
+            letter_index += 1
             
             to_add = '1'
             if board_height > row_index >= 0 and \
@@ -66,7 +65,7 @@ class Playfield:
                     self.board[row_index][letter_index] == '.':
                 to_add = '0'
             accumulator += to_add
-            letter_index +=1
+            letter_index += 1
             
             to_add = '1'
             if board_height > row_index >= 0 and \
@@ -74,10 +73,9 @@ class Playfield:
                     self.board[row_index][letter_index] == '.':
                 to_add = '0'
             accumulator += to_add
-            letter_index +=1
+            letter_index += 1
                
         return int(accumulator, base=2)
-
 
     def first_fitting_position(self, current_shape):  # returns tuple of coordinates
         for letter_index in range(-3, 11):
@@ -87,7 +85,6 @@ class Playfield:
                     return row_index, letter_index
 
         return ()
-
 
     def insert_shape(self, current_shape, x, y):
         retval = copy.deepcopy(self.board)
@@ -105,5 +102,3 @@ class Playfield:
                 if current_letter == '.':
                     return False
         return True
-        
-
